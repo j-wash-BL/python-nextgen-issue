@@ -1,0 +1,159 @@
+openapi: 3.0.0
+info:
+  title: GeoJson
+  version: 1.0.0
+  contact:
+    name: The Working With GeoJson Team
+    url: 'https://www.wwgj.team'
+    email: us@wwgj.team
+  description: |
+    A team to resolve our issues with GeoJson
+servers:
+  - url: /
+components:
+  schemas:
+    GeoJsonGeometry:
+      title: GeoJsonGeometry
+      description: GeoJSON geometry
+      oneOf:
+        - $ref: '#/components/schemas/Point'
+        - $ref: '#/components/schemas/LineString'
+        - $ref: '#/components/schemas/Polygon'
+        - $ref: '#/components/schemas/GeometryCollection'
+      discriminator:
+        propertyName: type
+        mapping:
+          Point: '#/components/schemas/Point'
+          LineString: '#/components/schemas/LineString'
+          Polygon: '#/components/schemas/Polygon'
+          GeometryCollection: '#/components/schemas/GeometryCollection'
+      externalDocs:
+        url: 'http://geojson.org/geojson-spec.html#geometry-objects'
+      example:
+        - coordinates:
+            - 0
+            - 0
+          type: Point
+    Point:
+      title: Point
+      type: object
+      description: GeoJSON geometry
+      externalDocs:
+        url: 'http://geojson.org/geojson-spec.html#id2'
+      properties:
+        coordinates:
+          title: Point3D
+          type: array
+          description: Point in 3D space
+          externalDocs:
+            url: 'http://geojson.org/geojson-spec.html#id2'
+          minItems: 2
+          maxItems: 3
+          items:
+            type: number
+            format: double
+        type:
+          type: string
+          default: Point
+      required:
+        - type
+    LineString:
+      title: LineString
+      type: object
+      description: GeoJSON geometry
+      externalDocs:
+        url: 'http://geojson.org/geojson-spec.html#id3'
+      properties:
+        coordinates:
+          type: array
+          items:
+            title: Point3D
+            type: array
+            description: Point in 3D space
+            externalDocs:
+              url: 'http://geojson.org/geojson-spec.html#id2'
+            minItems: 2
+            maxItems: 3
+            items:
+              type: number
+              format: double
+        type:
+          type: string
+          default: LineString
+      required:
+        - type
+    Polygon:
+      title: Polygon
+      type: object
+      description: GeoJSON geometry
+      externalDocs:
+        url: 'http://geojson.org/geojson-spec.html#id4'
+      properties:
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              title: Point3D
+              type: array
+              description: Point in 3D space
+              externalDocs:
+                url: 'http://geojson.org/geojson-spec.html#id2'
+              minItems: 2
+              maxItems: 3
+              items:
+                type: number
+                format: double
+        type:
+          type: string
+          default: Polygon
+      required:
+        - type
+    GeometryCollection:
+      title: GeometryCollection
+      type: object
+      description: GeoJSon geometry collection
+      required:
+        - type
+        - geometries
+      externalDocs:
+        url: 'http://geojson.org/geojson-spec.html#geometrycollection'
+      properties:
+        type:
+          type: string
+          default: GeometryCollection
+        geometries:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoJsonGeometry'
+paths:
+  /geojson:
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoJsonGeometry'
+      operationId: get-geojson
+      description: Get our GeoJson
+      tags:
+        - GeoJson
+    post:
+      summary: ''
+      operationId: post-geojson
+      responses:
+        '200':
+          description: OK
+      description: Add our GeoJson
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoJsonGeometry'
+      tags:
+        - GeoJson
+tags:
+  - name: GeoJson
